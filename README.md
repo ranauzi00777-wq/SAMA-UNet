@@ -361,21 +361,53 @@ Performance comparison on four benchmark datasets (DSC% / NSD%):
 
 ### Qualitative Results
 
-Example segmentation results across different modalities demonstrating SAMA-UNet's superior performance:
-<div align="left">
-BTCV (Abdominal CT Segmentation)
+<table>
+<tr>
+<td width="200">
 <img src="./results/btcv_example.png" alt="BTCV Results" width="200"/>
+</td>
+<td>
+<b>BTCV (Abdominal CT Segmentation)</b><br/>
+Multi-organ segmentation showing accurate delineation of liver, spleen, kidneys, pancreas, and other abdominal organs. SAMA-UNet achieves 85.38% DSC and 87.82% NSD, outperforming baseline methods in capturing complex anatomical boundaries.
+</td>
+</tr>
+</table>
 
-ACDC (Cardiac MRI Segmentation)
+<table>
+<tr>
+<td width="200">
 <img src="./results/acdc_example.png" alt="ACDC Results" width="200"/>
+</td>
+<td>
+<b>ACDC (Cardiac MRI Segmentation)</b><br/>
+Cardiac structure segmentation including right ventricle, left ventricle, and myocardium with precise boundary detection. Achieves 92.16% DSC and 96.54% NSD, demonstrating excellent performance on MRI data.
+</td>
+</tr>
+</table>
 
-
-EndoVis17 (Surgical Instrument Segmentation)
+<table>
+<tr>
+<td width="200">
 <img src="./results/endovis_example.png" alt="EndoVis17 Results" width="200"/>
+</td>
+<td>
+<b>EndoVis17 (Surgical Instrument Segmentation)</b><br/>
+Real-time surgical instrument segmentation in endoscopic images, accurately identifying forceps, scissors, and other tools. Achieves 67.14% DSC and 68.70% NSD on challenging endoscopy data with complex occlusions and reflections.
+</td>
+</tr>
+</table>
 
-ATLAS23 (Liver Tumor Segmentation)
+<table>
+<tr>
+<td width="200">
 <img src="./results/atlas_example.png" alt="ATLAS23 Results" width="200"/>
-</div>
+</td>
+<td>
+<b>ATLAS23 (Liver Tumor Segmentation)</b><br/>
+Precise liver and tumor boundary detection in contrast-enhanced MRI, critical for treatment planning. Achieves 84.06% DSC and 88.47% NSD, demonstrating robust performance on tumor segmentation tasks.
+</td>
+</tr>
+</table>
 
 ## 🔧 Ablation Studies
 
