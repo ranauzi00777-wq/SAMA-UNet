@@ -1,0 +1,159 @@
+# SAMA-UNet Configuration File
+# Copy this file and modify for your experiments
+
+# Dataset Configuration
+dataset:
+  name: 'BTCV'  # Options: BTCV, ACDC, EndoVis17, ATLAS23
+  data_dir: './data/BTCV'
+  num_classes: 14  # Will be auto-detected based on dataset name
+  in_channels: 1   # 1 for grayscale, 3 for RGB
+
+# Model Configuration
+model:
+  embed_dims: [96, 192, 384, 768]
+  depths: [2, 2, 2, 2]
+  num_heads: [3, 6, 12, 24]
+  mlp_ratio: 4.0
+  window_size: 7
+
+# Training Configuration
+training:
+  epochs: 500
+  batch_size: 8
+  num_workers: 4
+  
+  # Optimizer
+  optimizer: 'adamw'
+  lr: 5.0e-4
+  weight_decay: 1.0e-4
+  
+  # Scheduler
+  scheduler: 'onecycle'
+  warmup_epochs: 30
+  
+  # Loss
+  loss_weights:
+    dice: 1.0
+    ce: 1.0
+  
+  # Regularization
+  gradient_clip: 1.0
+  dropout: 0.0
+  
+  # Checkpointing
+  save_interval: 10
+  val_interval: 1
+  keep_n_checkpoints: 5
+
+# Data Augmentation
+augmentation:
+  train:
+    horizontal_flip: 0.5
+    vertical_flip: 0.5
+    rotate90: 0.5
+    shift_scale_rotate:
+      shift_limit: 0.1
+      scale_limit: 0.1
+      rotate_limit: 15
+      p: 0.5
+    elastic_transform:
+      alpha: 1
+      sigma: 50
+      p: 0.3
+    grid_distortion: 0.3
+    brightness_contrast:
+      brightness_limit: 0.2
+      contrast_limit: 0.2
+      p: 0.5
+    gauss_noise:
+      var_limit: [10.0, 50.0]
+      p: 0.3
+    gaussian_blur:
+      blur_limit: [3, 7]
+      p: 0.3
+  
+  val:
+    # Only resize and normalize
+    enabled: false
+
+# Evaluation Configuration
+evaluation:
+  batch_size: 8
+  num_workers: 4
+  save_predictions: true
+  save_visualizations: true
+  num_vis_samples: 10
+  compute_per_class: true
+  tolerance: 2.0  # For NSD calculation
+
+# Logging
+logging:
+  log_dir: './outputs'
+  tensorboard: true
+  log_interval: 10
+  print_interval: 50
+  save_samples: true
+
+# Hardware
+hardware:
+  gpu_ids: [0]
+  mixed_precision: false
+  cudnn_benchmark: true
+  deterministic: false
+
+# Experiment
+experiment:
+  name: 'sama_unet_baseline'
+  seed: 42
+  resume: ''  # Path to checkpoint to resume from
+  pretrained: ''  # Path to pretrained weights
+
+# Dataset-Specific Configurations
+BTCV:
+  input_size: [224, 224]
+  num_classes: 14
+  class_names:
+    - 'Background'
+    - 'Aorta'
+    - 'Gallbladder'
+    - 'Left Kidney'
+    - 'Right Kidney'
+    - 'Liver'
+    - 'Pancreas'
+    - 'Spleen'
+    - 'Stomach'
+    - 'IVC'
+    - 'Portal Vein'
+    - 'Left Adrenal'
+    - 'Right Adrenal'
+
+ACDC:
+  input_size: [224, 256]
+  num_classes: 4
+  class_names:
+    - 'Background'
+    - 'Right Ventricle'
+    - 'Myocardium'
+    - 'Left Ventricle'
+
+EndoVis17:
+  input_size: [384, 640]
+  num_classes: 8
+  in_channels: 3
+  class_names:
+    - 'Background'
+    - 'Bipolar Forceps'
+    - 'Prograsp Forceps'
+    - 'Large Needle Driver'
+    - 'Monopolar Curved Scissors'
+    - 'Ultrasound Probe'
+    - 'Suction'
+    - 'Clip Applier'
+
+ATLAS23:
+  input_size: [250, 320]
+  num_classes: 3
+  class_names:
+    - 'Background'
+    - 'Liver'
+    - 'Tumor'
