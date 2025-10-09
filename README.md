@@ -362,22 +362,19 @@ Performance comparison on four benchmark datasets (DSC% / NSD%):
 ### Qualitative Results
 
 Example segmentation results across different modalities demonstrating SAMA-UNet's superior performance:
-<div align="center">
+<div align="left">
 BTCV (Abdominal CT Segmentation)
-<img src="./results/btcv_example.png" alt="BTCV Results" width="800"/>
-Multi-organ segmentation showing accurate delineation of liver (purple), spleen (green), kidneys (yellow/cyan), and other abdominal organs.
+<img src="./results/btcv_example.png" alt="BTCV Results" width="200"/>
 
 ACDC (Cardiac MRI Segmentation)
-<img src="./results/acdc_example.png" alt="ACDC Results" width="800"/>
-Cardiac structure segmentation including right ventricle, left ventricle, and myocardium with precise boundary detection.
+<img src="./results/acdc_example.png" alt="ACDC Results" width="200"/>
+
 
 EndoVis17 (Surgical Instrument Segmentation)
-<img src="./results/endovis_example.png" alt="EndoVis17 Results" width="800"/>
-Real-time surgical instrument segmentation in endoscopic images, accurately identifying forceps, scissors, and other tools.
+<img src="./results/endovis_example.png" alt="EndoVis17 Results" width="200"/>
 
 ATLAS23 (Liver Tumor Segmentation)
-<img src="./results/atlas_example.png" alt="ATLAS23 Results" width="800"/>
-Precise liver and tumor boundary detection in contrast-enhanced MRI, critical for treatment planning.
+<img src="./results/atlas_example.png" alt="ATLAS23 Results" width="200"/>
 </div>
 
 ## 🔧 Ablation Studies
