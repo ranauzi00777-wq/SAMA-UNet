@@ -228,53 +228,72 @@ class SAMA_Block(nn.Module):
         
         return x_out
 
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 
 class SSM2D(nn.Module):
-    """
-    2D Selective Scan Module for CR-MSM
-    Simplified implementation using Conv2D for sequence modeling
-    """
     def __init__(self, dim, d_state=16):
         super().__init__()
+
         self.dim = dim
         self.d_state = d_state
-        
-        # State space parameters (simplified)
-        self.A = nn.Parameter(torch.randn(dim, d_state))
+
+        # state transition
+        self.A = nn.Parameter(torch.randn(d_state, d_state) * 0.1)
+
+        # projections
         self.B = nn.Linear(dim, d_state)
         self.C = nn.Linear(d_state, dim)
-        self.D = nn.Parameter(torch.ones(dim))
-        
-        self.delta = nn.Linear(dim, dim)
-        self.norm = nn.LayerNorm(dim)
-        
+
+        # input-dependent step size
+        self.delta = nn.Linear(dim, d_state)
+
+        # skip scaling (IMPORTANT: use scalar, not vector)
+        self.D = nn.Parameter(torch.ones(1))
+
+        # normalizations (IMPORTANT FIX)
+        self.in_norm = nn.LayerNorm(dim)
+        self.state_norm = nn.LayerNorm(d_state)
+
+        self.out_norm = nn.LayerNorm(dim)
+
     def forward(self, x):
-        """
-        x: (B, L, C) where L = H*W
-        """
         B, L, C = x.shape
-        
-        # Simplified SSM: use a recurrent-like processing
-        # In practice, this would be a more complex selective scan
+
+        # normalize input first (IMPORTANT STABILITY FIX)
+        x = self.in_norm(x)
+
+        # projections
+        B_state = self.B(x)
         delta = F.softplus(self.delta(x))
-        
-        # State space transformation (simplified)
-        B_state = self.B(x)  # (B, L, d_state)
-        
-        # Accumulate states (simplified recurrence)
-        states = []
+
+        # init state
         h = torch.zeros(B, self.d_state, device=x.device)
-        
+
+        states = []
+
         for t in range(L):
-            h = h + delta[:, t] * (self.A @ h.unsqueeze(-1)).squeeze(-1) + B_state[:, t]
+            Ah = torch.matmul(h, self.A.T)
+
+            h = h + delta[:, t] * Ah + B_state[:, t]
+
+            # stabilize state
+            h = self.state_norm(h)
+
             states.append(h)
-        
-        states = torch.stack(states, dim=1)  # (B, L, d_state)
-        
-        # Output transformation
-        y = self.C(states) + self.D * x
-        y = self.norm(y)
-        
+
+        states = torch.stack(states, dim=1)
+
+        # decode
+        y = self.C(states)
+
+        # residual connection (scaled)
+        y = y + self.D * x
+
+        # final norm
+        y = self.out_norm(y)
+
         return y
 
 
