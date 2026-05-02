@@ -515,7 +515,10 @@ class SAMA_UNet(nn.Module):
             skip_idx = len(encoder_features) - 2 - i
             skip = encoder_features[skip_idx]
             
-            x = torch.cat([x, skip], dim=1)
+           if x.shape[-2:] != skip.shape[-2:]:
+               x = F.interpolate(x, size=skip.shape[-2:], mode="bilinear", align_corners=False)
+
+           x = torch.cat([x, skip], dim=1))
             
             # Decoder block
             x = decoder_block(x)
